@@ -17,13 +17,13 @@ db.once("open", ()=> {
 const express = require("express")
 const app = express()
 const indexRouter = require("./routers/index.js")
+const author = require("./routers/authors")
 require("dotenv").config()
 
 const port = process.env.PORT
 //importing router
 
 
-app.use(runFirst)
 //***New  */
 const expressLayouts = require("express-ejs-layouts")
 
@@ -33,35 +33,16 @@ app.set("layout", "layouts/layout" )
 app.use(expressLayouts)
 app.use(express.static("public"))
 
-app.use("/", indexRouter)
-
-app.use(secondRun)
+app.use("/",indexRouter)
 app.use("/user",indexRouter)
-//***EndNew */
+
+app.use("/author", author)
+app.use("/author/new", author)
 
 /**Removed app.get which are routes
  *
  *  
  */
-
- 
-//middleware 1
-function runFirst(req,res,next){
-    console.log("This is first middleware")
-    next()
-}
-//secondmiddleware
-function secondRun(req,res,next){
-    if (req.query.admin === "true"){
-        console.log("Authenticate user first")
-        res.send("Welcome Mr. Robert. This is your Home page.")
-        next()
-    }else{
-       console.log("Auth failed. Someone trying to hack!") 
-       res.send("You are not admin, logons rejected!")
-    }
-
-}
 app.listen(port,()=>{
     console.log("Sever started Listening on Port:"+port)
 })
